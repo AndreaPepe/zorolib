@@ -1,0 +1,11 @@
+*~
+*.o
+*.d
+*.dd[123]
+
+libzoro.a*
+libzoro.so*
+
+tags
+
+*.tar.gz
