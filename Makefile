@@ -166,6 +166,7 @@ ifeq ($(BUILD_OUTPUT),)
 EXTRA_DIRS?=$(shell find -L . -mindepth 1 -path ./.git -prune -o \( -type d -a \! -empty \) -print)
 SUBTARGETS_DIRS?=$(shell find -L . -mindepth 1 -path ./.git -prune -o \( -type d -a \! -empty \) -print)
 else
+_IGNORE:=$(shell mkdir -p $(BUILD_OUTPUT))
 EXTRA_DIRS?=$(shell find -L . -mindepth 1 -path ./.git -prune -o \( -type d -a \! -empty -a \! -samefile $(BUILD_OUTPUT) \) -print )
 SUBTARGETS_DIRS?=$(shell find -L . -mindepth 1 -path ./.git -prune -o \( -type d -a \! -empty -a \! -samefile $(BUILD_OUTPUT) \) -print )
 endif
@@ -332,8 +333,6 @@ _CREATE_BUILD_OUTPUT:=$(shell for i in $(_EXTRA_DIRS) ; do mkdir -p $(BUILD_OUTP
 BUILD_OUTPUT:=$(BUILD_OUTPUT:%/=%)/
 OBJ:=$(OBJ:%=$(BUILD_OUTPUT)%)
 DEP:=$(DEP:%=$(BUILD_OUTPUT)%)
-.PHONY: tags
-tags: $(BUILD_OUTPUT)tags
 endif
 
 .SECONDARY: $(DEP) $(OBJ)
@@ -776,6 +775,8 @@ clean: clean-files clean-pkg
 ifneq ($(BUILD_OUTPUT),)
 	@for i in $$(find $(BUILD_OUTPUT) -mindepth 1 -type d | sort -r); do \
 		$(RMDIR) $${i} ; done
+	if [ -z "$$(ls -A $(BUILD_OUTPUT))" ]; then \
+   		$(RMDIR) $(BUILD_OUTPUT); fi
 endif
 	@$(RM) -f "$(ENV_SCRIPT_OUTPUT)"
 
