@@ -3,6 +3,9 @@
 *.d
 *.dd[123]
 
+test
+!test/
+
 libzoro.a*
 libzoro.so*
 
