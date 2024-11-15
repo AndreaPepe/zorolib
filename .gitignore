@@ -9,6 +9,9 @@ test
 libzoro.a*
 libzoro.so*
 
+# LSP (clangd) + ctags
 tags
+compile_commands.json
+.cache
 
 *.tar.gz

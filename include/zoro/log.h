@@ -7,6 +7,7 @@
  *
  * Provide several utility functions to produce detailed logs.
  */
+
 #pragma once
 #ifndef __ZORO_LOG_H__
 
@@ -74,7 +75,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <string.h>
 #include <alloca.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -328,7 +328,8 @@ int zorolog_duplicate(const char *logfile, uint8_t stds, int flags);
  *
  * @return          0 on Success; a value different from zero otherwise.
  */
-#define zorolog_warning(_format, args...) __zorolog_print(WARNING, _format, ##args)
+#define zorolog_warning(_format, args...) \
+            __zorolog_print(WARNING, _format, ##args)
 
 /**
  * @brief Log a WARNING level message without log prefixes.
