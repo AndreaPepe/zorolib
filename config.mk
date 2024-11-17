@@ -42,7 +42,7 @@ TARGETTYPE=lib
 BUILD_OUTPUT=build
 
 # Add here extra include directories (EXTRA_DIRS are automatically added)
-# INCFLAGS?=-I../your_include_directory
+INCFLAGS=-Iinclude
 
 # Add here your -L and -l linker options
 # Remember to add -lstdc++ when linking C++ code
@@ -96,8 +96,12 @@ AUTHOR=Andrea Pepe
 # By default, files from all subdirectories are built.
 # If you want to build only few directories, just list them in the variable.
 # Not to include any directory, just leave the variable empty
-# EXTRA_DIRS=
-# SUBTARGETS_DIRS=
+EXTRA_DIRS:=						\
+	    src/module-log				\
+	    src/module-string		
+
+SUBTARGETS_DIRS:=					\
+	    src/module-log/test			
 
 # Uncomment (and eventually change the header file name)
 # to install an header file along with your target
@@ -124,3 +128,12 @@ AUTHOR=Andrea Pepe
 
 # Cross compiler prefix, e.g. like "arm-arago-linux-gnueabi-"
 # CROSS_COMPILE=
+
+
+# Defining alias
+default: lib
+lib: target
+test: subtargets
+all: lib test
+
+.PHONY: lib test
