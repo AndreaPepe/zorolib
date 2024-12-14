@@ -100,6 +100,9 @@ AUTHOR=Andrea Pepe
 # Not to include any directory, just leave the variable empty
 # EXTRA_DIRS=
 # SUBTARGETS_DIRS=
+ifeq ($(TEST),)
+SUBTARGETS_DIRS=
+endif
 
 # Uncomment (and eventually change the header file name)
 # to install an header file along with your target
