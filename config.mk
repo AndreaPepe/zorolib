@@ -110,7 +110,7 @@ endif
 # It is allowed only one single file with extension .h
 # Any file that it includes using doblue quotes (not angle brackets!) is going
 # to be installed as well
-# INSTALL_HEADER=
+INSTALL_HEADER=include/$(TARGETNAME).h
 
 # The filesystem which you build against
 # Note that in this file system will also be installed header files and libraries.
