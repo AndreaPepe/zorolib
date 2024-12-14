@@ -2,7 +2,7 @@
 # Copyright (c) 2024
 # Author: Andrea Pepe <pepe.andmj@gmail.com>
 #
-# Version 0.1.0 (Nov 10th, 2024)
+# Version 0.1.1 (Dec 14th, 2024)
 #
 # "One to build them all!"
 #
@@ -100,9 +100,12 @@ BUILD_OUTPUT?=
 # Add here extra include directories (EXTRA_DIRS are automatically added)
 #INCFLAGS?=-I../your_include_directory
 
-# Add here your -L and -l linker options
-# Remember to add -lstdc++ when linking C++ code
+# Add here your -L linker options
 LDFLAGS?=
+
+# Add here your -l linker options
+# Remember to add -lstdc++ when linking C++ code
+LDLIBS?=
 
 
 # Add here the static libraries (*.a files) you want to link
@@ -537,7 +540,7 @@ $(BUILD_OUTPUT)%.o: %.S
 ifneq ($(TARGETTYPE),staticlib)
 $(TARGET): $(OBJ)
 	$(call pretty_print,LD $@)
-	$(LINK) $(OBJ) $(STATICLIBS) $(LDFLAGS) -o $@
+	$(LINK) $(OBJ) $(STATICLIBS) $(LDFLAGS) $(LDLIBS) -o $@
 endif
 
 ifneq ($(MAKECMDGOALS:clean%=CLEAN),CLEAN)
@@ -828,11 +831,13 @@ debuginfo: $(SOURCEFILELIST) $(SUBT_SOURCEFILELIST) $(FULL_SOURCEFILELIST)
 	@echo "Linker info:						"
 	@echo " * Linker:                  $(LINK)			"
 	@echo " * Static libs:             $(STATICLIBS)		"
+	@echo " * Linker libs:             $(LDLIBS)                    "
 	@echo " * Linker flags:            $(LDFLAGS)			"
 	@echo "Sources:							"
 	@echo " * Output build directory:  $(BUILD_OUTPUT)		"
 	@echo " * Candidate extra dirs:					"
-	@j=1; for i in $(EXTRA_DIRS) ; do printf "   %3d. $$i\n" $$((j++)); done
+	@j=1; for i in $(EXTRA_DIRS) ; do 				\
+				printf "   %3d. $$i\n" $$((j++)); done
 	@echo " * Extra dirs:						"
 	@j=1; for i in $(_EXTRA_DIRS) ; do				\
 				printf "   %3d. $$i\n" $$((j++)); done
