@@ -420,12 +420,19 @@ BAKPKG?=$(BUILD_OUTPUT)$(TARGETEXT)-backup-$(VERSION).tar.gz
 BAKPKG:=$(shell readlink -mn $(BAKPKG))
 
 ifneq ($(INSTALL_HEADER),)
+	INSTALL_HEADER_DIR=$(shell dirname $(abspath $(INSTALL_HEADER)))
 	# Note that here I use := instead of = because I want CFLAGS to expand
 	# immediately (before including $(VISHEADER))
-	MAIN_HEADER_DEP:=$(shell PATH="$(PATH)" $(CPP) $(CFLAGS) $(CXXFLAGS) -MM $(INSTALL_HEADER) | sed 's,\($*\)\.o[ :]*,\1.h: ,g' | sed 's,\\,,g')
+	____MAIN_HEADER_DEP:=$(shell PATH="$(PATH)" $(CPP) $(CFLAGS) $(CXXFLAGS) -MM $(INSTALL_HEADER) | sed 's,\($*\)\.o[ :]*,\1.h: ,g' | sed 's,\\,,g')
 	# Removing target
-	_MAIN_HEADER_DEP:=$(shell echo $(MAIN_HEADER_DEP) | cut -d ':' -f 2)
-	HEADERS_INSTALL_DIR=$(shell echo $(BUILDFS)/$(INSTALL_PREFIX)/include | sed 's_/\+_/_g')
+	___MAIN_HEADER_DEP:=$(shell echo $(____MAIN_HEADER_DEP) | cut -d ':' -f 2)
+	
+	# Work with absolute paths and remove the headers that are not
+	# contained under the directory of the specified install header
+	__MAIN_HEADER_DEP:=$(abspath $(___MAIN_HEADER_DEP))
+	_MAIN_HEADER_DEP:=$(foreach h, $(__MAIN_HEADER_DEP), $(filter $(INSTALL_HEADER_DIR)%, $(h)))
+	MAIN_HEADER_DEP:="$(INSTALL_HEADER): $(_MAIN_HEADER_DEP)"
+	HEADERS_INSTALL_DIR=$(BUILDFS)/$(INSTALL_PREFIX)/include
 endif
 
 ifeq ($(OPTIMIZE_LIB_VISIBILITY),y)
@@ -458,7 +465,7 @@ endif
 INSTALLTARGETS=$(ALLTARGETS)
 
 ifneq ($(INSTALL_HEADER),)
-	INSTALL_HEADER_DIR=$(shell cd $(dirname $(INSTALL_HEADER)) && pwd -P)
+	INSTALL_HEADER_DIR=$(shell dirname $(abspath $(INSTALL_HEADER)))
 	REMOVE_HEADER_DIR:=$(shell for i in $(_EXTRA_DIRS) ; do		      \
 		if [ "$$(cd $$i && pwd -P)" == "$(INSTALL_HEADER_DIR)" ];then \
 			echo -n "y" ; fi ; done)
@@ -668,12 +675,16 @@ endif
 	done
 
 ifneq ($(MAIN_HEADER_DEP),)
-$(HEADERS_INSTALL_DIR)/$(MAIN_HEADER_DEP) $(INSTALL_HEADER)
+$(TARGET_HEADERS): $(_MAIN_HEADER_DEP)
 	$(call pretty_print,Installing headers to your build filesystem:)
 	@for h in $^ ; do						\
-		test "$$h" = "$(HEADERS_INSTALL_DIR)/$$h" && continue;	\
-		$$__UNDEF__$(call pretty_print, * $$h -> \"$(HEADERS_INSTALL_DIR)/$$h\"); \
-		$(INSTALL) -m 0644 $$h "$(HEADERS_INSTALL_DIR)/$$h";	\
+		h_dest=$$(echo "$$h" | sed "s|^$(INSTALL_HEADER_DIR)/||g"); \
+		if [ ! -r "$(HEADERS_INSTALL_DIR)/$$h_dest" ]; then \
+			$$__UNDEF__$(call pretty_print, * $$h -> \"$(HEADERS_INSTALL_DIR)/$$h_dest\"); \
+			$(INSTALL) -m 0644 $$h $(HEADERS_INSTALL_DIR)/$$h_dest;	\
+		else 								\
+			$$__UNDEF__$(call pretty_print, * $$h -> \"$(HEADERS_INSTALL_DIR)/$$h_dest\" already installed); \
+		fi 								\
 	done
 endif
 
