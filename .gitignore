@@ -13,5 +13,6 @@ libzoro.so*
 tags
 compile_commands.json
 .cache
+build
 
 *.tar.gz

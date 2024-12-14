@@ -45,12 +45,12 @@ char *zorostr_vsprintf(const char *format, va_list ap);
  */
 static inline char *zorostr_sprintf(const char *format, ...)
 {
-    va_list ap;
-    char *ret;
-    va_start(ap, format);
-    ret = zorostr_vsprintf(format, ap);
-    va_end(ap);
-    return ret;
+        va_list ap;
+        char *ret;
+        va_start(ap, format);
+        ret = zorostr_vsprintf(format, ap);
+        va_end(ap);
+        return ret;
 }
 
 
@@ -319,6 +319,20 @@ int __zorostr_strtoc(const char *s, char *res, char **endptr);
 int __zorostr_strtouc(const char *s, unsigned char *res, char **endptr);
 #define zorostr_strtouc(_s, _res) __zorostr_strtouc(_s, _res, NULL);
 
+
+/**************************** STRING ARRAYS **********************************/
+
+static inline char **zorostr_explode(const char *delim, const char *str_format,
+                                     ...)
+{
+        va_list ap;
+        char **__ret;
+
+        va_start(ap, str_format);
+        __ret = __v_zorostr_explode(delim, str_format, ap);
+        va_end(ap);
+        return __ret;
+}
 
 
 #ifdef __cplusplus

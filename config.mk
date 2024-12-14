@@ -39,7 +39,7 @@ TARGETTYPE=lib
 # USEGDB=n
 
 # Change the build output directory (default is .)
-BUILD_OUTPUT=build
+# BUILD_OUTPUT=
 
 # Add here extra include directories (EXTRA_DIRS are automatically added)
 INCFLAGS=-Iinclude
