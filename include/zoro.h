@@ -11,5 +11,6 @@
 #include <zoro/log.h>
 #include <zoro/linux/rwonce.h>
 #include <zoro/linux/list.h>
+#include <zoro/linux/hlist.h>
 
 #endif /* __ZORO_H__ */
