@@ -930,6 +930,42 @@ static inline void list_splice_tail_init(struct list_head *list,
 
 /** @} */
 
+/* Extracted from include/linux/list_sort.h in kernel 5.16.11 */
+typedef int __attribute__((nonnull(2,3))) (*list_cmp_func_t)(void *,
+		const struct list_head *, const struct list_head *);
+
+/**
+ * @brief Sort a doubly linked list using a merge sort algorithm.
+ *
+ * The comparison function @a cmp must return > 0 if @a a should sort after
+ * @a b ("@a a > @a b" if you want an ascending sort), and <= 0 if @a a should
+ * sort before @a b *or* their original order should be preserved.  It is
+ * always called with the element that came first in the input in @a a,
+ * and @a list_sort is a stable sort, so it is not necessary to distinguish
+ * the @a a < @a b and @a a == @a b cases.
+ *
+ * This is compatible with two styles of @a cmp function:
+ * - The traditional style which returns <0 / =0 / >0, or
+ * - Returning a boolean 0/1.
+ * The latter offers a chance to save a few cycles in the comparison.
+ *
+ * A good way to write a multi-word comparison is:
+ * @code
+ *	if (a->high != b->high)
+ *		return a->high > b->high;
+ *	if (a->middle != b->middle)
+ *		return a->middle > b->middle;
+ *	return a->low > b->low;
+ * @endcode
+ *
+ * @param priv          private data, opaque to @a list_sort(), passed to @a 
+ *                      cmp
+ * @param head          the list to sort
+ * @param cmp           the elements comparison function
+ */
+__attribute__((nonnull(2,3)))
+void list_sort(void *priv, struct list_head *head, list_cmp_func_t cmp);
+
 #ifdef __cplusplus
 }
 #endif
