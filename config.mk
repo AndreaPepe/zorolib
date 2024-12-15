@@ -42,7 +42,7 @@ TARGETTYPE=lib
 # BUILD_OUTPUT=.
 
 # Add here extra include directories (EXTRA_DIRS are automatically added)
-# INCFLAGS?=-I../your_include_directory
+INCFLAGS=-Iinclude
 
 # Add here your -L linker options
 # LDFLAGS=
