@@ -9,5 +9,7 @@
 
 #include <zoro/compiler.h>
 #include <zoro/log.h>
+#include <zoro/linux/rwonce.h>
+#include <zoro/linux/list.h>
 
 #endif /* __ZORO_H__ */
