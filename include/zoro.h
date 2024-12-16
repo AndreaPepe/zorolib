@@ -9,6 +9,7 @@
 
 #include <zoro/compiler.h>
 #include <zoro/log.h>
+#include <zoro/test.h>
 #include <zoro/linux/rwonce.h>
 #include <zoro/linux/list.h>
 #include <zoro/linux/hlist.h>
